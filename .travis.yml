@@ -50,6 +50,8 @@ jobs:
 
   # adapted from: https://github.com/pypa/python-manylinux-demo/blob/master/.travis.yml
   - name: Deploy manylinux1_x86_64
+    language: python
+    python: 3.7
     services:
     - docker
     env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
@@ -85,16 +87,11 @@ jobs:
   #   - ls wheelhouse/
 
   - name: Deploy osx
-    # v1 from: https://github.com/travis-ci/travis-ci/issues/9929#issuecomment-505232416
-    # v2 from: https://github.com/cclauss/Travis-CI-Python-on-three-OSes/blob/master/.travis.yml
-    language: rust
-    rust: stable    
+    # adapted from: https://github.com/cclauss/Travis-CI-Python-on-three-OSes/blob/master/.travis.yml  
     os: osx
     osx_image: xcode11 # python3.7 comes installed with xcode11 image
-
-    # install:
-    # - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    # - export PATH="${HOME}/.cargo/bin:${PATH}"
+    language: rust
+    rust: stable  
     script:
     - cd bindings-python
     - python3 -m pip install -e . -v
@@ -104,7 +101,7 @@ jobs:
     rust: stable
     os: windows
     before_install:
-      - choco install python  # this install takes at least 1 min 30 sec
+      - choco install python --version 3.7.5  # this install takes at least 1 min 30 sec
       - python -m pip install --upgrade pip
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
     script:
