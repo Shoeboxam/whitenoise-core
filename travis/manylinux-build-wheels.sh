@@ -5,7 +5,6 @@
 # exit immediately upon failure, print commands while running
 set -e -x
 
-cd /io/bindings-python/
 # python3 -m pip install -r /io/bindings-python/requirements.txt
 # python3 /io/bindings-python/setup.py -d wheelhouse/
 # Compile wheels
