@@ -5,10 +5,5 @@
 # exit immediately upon failure, print commands while running
 set -e -x
 
-yum install -y openssl
-
-# Compile wheels
-for PYBIN in /opt/python/*/bin; do
-    "${PYBIN}/pip" install -r /io/requirements.txt
-    "${PYBIN}/python" /io/setup.py bdist_wheel -d wheelhouse/
-done
+python3 -m pip install -r /io/bindings-python/requirements.txt
+python3 /io/bindings-python/setup.py -d wheelhouse/

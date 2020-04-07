@@ -89,11 +89,24 @@ jobs:
     # v2 from: https://github.com/cclauss/Travis-CI-Python-on-three-OSes/blob/master/.travis.yml
     language: rust
     rust: stable    
+    os: osx
     osx_image: xcode11 # python3.7 comes installed with xcode11 image
 
     # install:
     # - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     # - export PATH="${HOME}/.cargo/bin:${PATH}"
+    script:
+    - cd bindings-python
+    - python3 -m pip install -e . -v
+
+  - name: Deploy windows
+    language: rust
+    rust: stable
+    os: windows
+    before_install:
+      - choco install python  # this install takes at least 1 min 30 sec
+      - python -m pip install --upgrade pip
+    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
     script:
     - cd bindings-python
     - python3 -m pip install -e . -v
