@@ -58,6 +58,7 @@ jobs:
          PYTHON_PLAT=manylinux2010_i686
     install:
     - docker pull $DOCKER_IMAGE
+    - yum -y install gcc
     script:
     - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE linux32 /io/travis/manylinux-build-wheels.sh $PROTO_VERSION $PROTO_PLAT
     - ls wheelhouse/
@@ -99,7 +100,7 @@ jobs:
     rust: stable  
     script:
     - cd bindings-python
-    - python3 -m pip bdist_wheel
+    - python3 setup.py bdist_wheel
 
   - name: Deploy windows
     language: rust
@@ -108,7 +109,9 @@ jobs:
     before_install:
       - choco install python --version 3.7.5  # this install takes at least 1 min 30 sec
       - python -m pip install --upgrade pip
+      - choco install protoc
+      - choco install rust
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
     script:
     - cd bindings-python
-    - python3 -m pip install -e . -v
+    - python3 setup.py bdist_wheel -d ../wheelhouse/
