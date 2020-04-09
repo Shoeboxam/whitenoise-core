@@ -9,7 +9,6 @@ cd /io/bindings-python/
 # python3 -m pip install -r /io/bindings-python/requirements.txt
 # python3 /io/bindings-python/setup.py -d wheelhouse/
 # Compile wheels
-ls /opt/python/
 
 
 yum -y install openssl-devel
@@ -28,7 +27,7 @@ if ! [ -x "$(command -v cargo)" ]; then
 	export PATH="${HOME}/.cargo/bin:${PATH}"
 fi
 
-
+# compilation is only necessary for one generic version of python
 # for PYBIN in /opt/python/cp3*/bin; do
 #     "${PYBIN}/pip" install -r requirements.txt
 #     "${PYBIN}/python" setup.py bdist_wheel -d /wheelhouse # ./ -w wheelhouse # bdist_wheel -d /wheelhouse
@@ -39,3 +38,8 @@ export PATH="/opt/python/cp38-cp38/bin:$PATH"
 
 pip install -r requirements.txt
 python setup.py bdist_wheel -d /io/wheelhouse # ./ -w wheelhouse # bdist_wheel -d /wheelhouse
+
+for whl in wheelhouse/*.whl; do
+	auditwheel repair "$whl" --plat $PLAT -w /io/wheelhouse/
+done
+
