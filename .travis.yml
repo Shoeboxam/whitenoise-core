@@ -20,24 +20,24 @@ notifications:
 
 jobs:
   include:
-  - name: Test Rust
-    os: linux
-    language: rust
-    rust: stable
-    script:
-    # (1) Rust Validator -> Test & Build
-    - cd validator-rust; cargo build --verbose --workspace;
-    - cargo test --verbose --workspace;
-    - cd ..
-    # (2) Rust Runtime -> Test & Build
-    - cd runtime-rust; cargo build --verbose --workspace;
-    - cargo test --verbose --workspace;
-    - cd ..;
-    # (3) Build python bindings and run tests
-    #   > Commented out for now.  It works but takes a while to run...
-    #- cd bindings-python; python3 -m pip install -r requirements.txt;
-    #- export RUST_BACKTRACE=1; python3 -m pip install -e . -v;
-    #- python3 -m pytest -x -v; cd ..;
+  # - name: Test Rust
+  #   os: linux
+  #   language: rust
+  #   rust: stable
+  #   script:
+  #   # (1) Rust Validator -> Test & Build
+  #   - cd validator-rust; cargo build --verbose --workspace;
+  #   - cargo test --verbose --workspace;
+  #   - cd ..
+  #   # (2) Rust Runtime -> Test & Build
+  #   - cd runtime-rust; cargo build --verbose --workspace;
+  #   - cargo test --verbose --workspace;
+  #   - cd ..;
+  #   # (3) Build python bindings and run tests
+  #   #   > Commented out for now.  It works but takes a while to run...
+  #   #- cd bindings-python; python3 -m pip install -r requirements.txt;
+  #   #- export RUST_BACKTRACE=1; python3 -m pip install -e . -v;
+  #   #- python3 -m pytest -x -v; cd ..;
 
   #   after_success:
   #   #
@@ -69,7 +69,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tag: true
+        tags: true
 
   # 64-bit
   - name: Deploy manylinux2010_x86_64
@@ -90,7 +90,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tag: true
+        tags: true
 
   # RISC
   - name: Deploy manylinux2014_aarch64
@@ -113,7 +113,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tag: true
+        tags: true
 
 
   - name: Deploy osx
@@ -131,26 +131,26 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tag: true
+        tags: true
 
-  - name: Deploy windows
-    language: rust
-    rust: stable
-    os: windows
-    before_install:
-      - choco install python --version 3.7.5  # this install takes at least 1 min 30 sec
-      - python -m pip install --upgrade pip
-      - choco install protoc
-      - choco install rust
-    env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-    script:
-    - refreshenv
-    - cd bindings-python
-    - python3 setup.py bdist_wheel -d ../wheelhouse/
-    deploy:
-      skip_cleanup: true
-      provider: script
-      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
-      on:
-        branch: master
-        tag: true
+  # - name: Deploy windows
+  #   language: rust
+  #   rust: stable
+  #   os: windows
+  #   before_install:
+  #     - choco install python --version 3.7.5  # this install takes at least 1 min 30 sec
+  #     - python -m pip install --upgrade pip
+  #     - choco install protoc
+  #     - choco install rust
+  #   env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+  #   script:
+  #   - refreshenv
+  #   - cd bindings-python
+  #   - python3 setup.py bdist_wheel -d ../wheelhouse/
+  #   deploy:
+  #     skip_cleanup: true
+  #     provider: script
+  #     script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+  #     on:
+  #       branch: master
+  #       tags: true
