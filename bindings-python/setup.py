@@ -5,7 +5,8 @@ import os
 os.environ['RUST_BACKTRACE'] = 'full'  # '1'
 os.environ['RUSTFLAGS'] = ""
 
-release = False
+# set the environment variable to increase compiler optimization
+release = os.environ.get("WHITENOISE_RELEASE") == "True"
 
 rust_build_path = 'target/' + ('release' if release else 'debug')
 rust_build_cmd = ['cargo', 'build']
@@ -46,17 +47,22 @@ def build_python(spec):
         path="."
     )
 
-
 setup(
     name='whitenoise',
     version='0.1.0',
     packages=['whitenoise'],
-    zip_safe=False,
-    platforms='any',
-    setup_requires=['milksnake'],
-    install_requires=['milksnake'],
+    zip_safe=False,  # unzip the package when installing
+    setup_requires=['milksnake'],  # temporarily download these packages when setting up
+    install_requires=[  # install these packages to the environment when setting up
+        'protobuf',
+        'numpy',
+        'milksnake'
+    ],
+    package_dir={"whitenoise": "whitenoise"},
+    package_data={"whitenoise": ["variant_message_map.json"]},
     milksnake_tasks=[
         build_native,
         build_python
     ]
 )
+
