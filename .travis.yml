@@ -1,13 +1,23 @@
+
+
 branches:
+  # all branches
   only:
   - gh-pages
-  - "/.*/"
+  - /.*/
+
+# all jobs should enable the release flag for compiler optimizations
 env:
   global:
   - WHITENOISE_RELEASE=True
   - PROTO_VERSION=3.11.4
+  - TWINE_USERNAME=__token__
+  - secure: pOnEad+OpOyEYYzP6fX4C1LbrpDzaLtYC3gE8pDlLkFOLmEeIvDRbfSvG/BWacrXzWf1XTmB5aHyBSnOm4dUxemPZZtEXLqR4TynWawWdyS7+Vtvwec+6AjOD6mJw2lBmx/Lle7sFZ1H7u7VO3kCAN3TUeLMU6DCZVA0PhiGUDFYnARkBLygcETH+/tuFqyVMr6SfapaNO5jWVjYv9rUYU4i5UzuoOz+eqFeMjBZMk41dszCJ//PVOvlyWNacfz8P3/18oGPdANJeDC7I4DRoFiPQ+iOinWnWAbni+thNvzRTpS9s1T/tQitT/66nep5WbElUi8ajVR/GcdOnJkx0+i7xwOQwJi5uyF484nr9b0hNeVp1ujjsBe5lzGwoIh1YWz0FJHkOU/UWvyLP/HGx9yZ91Jv289VFlk8nbxQ5R8MluKCB1D3ttr+5N8yDx+kcU0Fp93KO1oiswbcLR5z7JG7nJK/dFmdh2A7+eE8jUY5+uSQgM12A4G8eBI73eO2ch/NWooGTOi+NuCEyamv2OwEuVJ3GDKPohNvQkQYW9SugisuEbm3oyDb18m4DtdS4bZ8X/R1HZJbtoMcV7uQrDKvFmQqJhKw/RbAoUSAGPGIDV9zrPF1lfMpt2Jj9KV4+JXb12RUz0qElJ8LkdEV7m1UtSnZEpx+SODvPaIBTf4=
+
+
 notifications:
   email: false
+
 jobs:
   include:
   - name: Test Rust
@@ -15,71 +25,132 @@ jobs:
     language: rust
     rust: stable
     script:
+    # (1) Rust Validator -> Test & Build
     - cd validator-rust; cargo build --verbose --workspace;
     - cargo test --verbose --workspace;
     - cd ..
+    # (2) Rust Runtime -> Test & Build
     - cd runtime-rust; cargo build --verbose --workspace;
     - cargo test --verbose --workspace;
     - cd ..;
+    # (3) Build python bindings and run tests
+    #   > Commented out for now.  It works but takes a while to run...
+    #- cd bindings-python; python3 -m pip install -r requirements.txt;
+    #- export RUST_BACKTRACE=1; python3 -m pip install -e . -v;
+    #- python3 -m pytest -x -v; cd ..;
+
+  #   after_success:
+  #   #
+  #   # Build the documentation for gh-pages
+  #   #
+  #   - echo $TRAVIS_BRANCH;
+  #   # switch to master after initial version
+  #   - if [ "$TRAVIS_BRANCH" == "develop" ]; then
+  #     cd runtime-rust;
+  #     cargo doc --verbose --target-dir=../docs;
+  #     cd ..; rm -rf docs/debug;
+  #     fi
+
+  # 32-bit
   - name: Deploy manylinux2010_i686
     services:
     - docker
-    env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_i686 PROTO_PLAT=linux-x86_32.zip
-      PYTHON_PLAT=manylinux2010_i686
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_i686
+         PROTO_PLAT=linux-x86_32.zip
+         PYTHON_PLAT=manylinux2010_i686
     install:
     - docker pull $DOCKER_IMAGE
     script:
-    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE linux32 /io/travis/manylinux-build-wheels.sh
-      $PROTO_VERSION $PROTO_PLAT
+    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE linux32 /io/travis/manylinux-build-wheels.sh $PROTO_VERSION $PROTO_PLAT
     - ls wheelhouse/
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      on:
+        branch: master
+        tag: true
+
+  # 64-bit
   - name: Deploy manylinux2010_x86_64
     services:
     - docker
-    env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64 PROTO_PLAT=linux-x86_64.zip
-      PYTHON_PLAT=manylinux1_x86_64
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
+         PROTO_PLAT=linux-x86_64.zip
+         PYTHON_PLAT=manylinux1_x86_64
     install:
     - docker pull $DOCKER_IMAGE
     - chmod +x travis/manylinux-build-wheels.sh
     script:
-    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE /io/travis/manylinux-build-wheels.sh
-      $PROTO_VERSION $PROTO_PLAT
+    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE /io/travis/manylinux-build-wheels.sh $PROTO_VERSION $PROTO_PLAT
     - ls wheelhouse/
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      on:
+        branch: master
+        tag: true
+
+  # RISC
   - name: Deploy manylinux2014_aarch64
     services:
     - docker
     arch:
     - arm64
-    env: DOCKER_IMAGE=quay.io/pypa/manylinux2014_aarch64 PROTO_PLAT=linux-aarch_64.zip
-      PYTHON_PLAT=manylinux2014_aarch64
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux2014_aarch64
+         PROTO_PLAT=linux-aarch_64.zip
+         PYTHON_PLAT=manylinux2014_aarch64
     install:
     - docker pull $DOCKER_IMAGE
     - chmod +x travis/manylinux-build-wheels.sh
     script:
-    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE /io/travis/manylinux-build-wheels.sh
-      $PROTO_VERSION $PROTO_PLAT
+    - docker run --rm -e PLAT=$PYTHON_PLAT -v `pwd`:/io $DOCKER_IMAGE /io/travis/manylinux-build-wheels.sh $PROTO_VERSION $PROTO_PLAT
     - ls wheelhouse/
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      on:
+        branch: master
+        tag: true
+
+
   - name: Deploy osx
+    # adapted from: https://github.com/cclauss/Travis-CI-Python-on-three-OSes/blob/master/.travis.yml  
     os: osx
-    osx_image: xcode11
+    osx_image: xcode11 # python3.7 comes installed with xcode11 image
     language: rust
-    rust: stable
+    rust: stable  
     script:
     - cd bindings-python
     - python3 setup.py bdist_wheel
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      on:
+        branch: master
+        tag: true
+
   - name: Deploy windows
     language: rust
     rust: stable
     os: windows
     before_install:
-    - choco install python --version 3.7.5
-    - python -m pip install --upgrade pip
-    - choco install protoc
-    - choco install rust
+      - choco install python --version 3.7.5  # this install takes at least 1 min 30 sec
+      - python -m pip install --upgrade pip
+      - choco install protoc
+      - choco install rust
     env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
     script:
     - refreshenv
     - cd bindings-python
     - python3 setup.py bdist_wheel -d ../wheelhouse/
-deploy:
-  password:
-    secure: pOnEad+OpOyEYYzP6fX4C1LbrpDzaLtYC3gE8pDlLkFOLmEeIvDRbfSvG/BWacrXzWf1XTmB5aHyBSnOm4dUxemPZZtEXLqR4TynWawWdyS7+Vtvwec+6AjOD6mJw2lBmx/Lle7sFZ1H7u7VO3kCAN3TUeLMU6DCZVA0PhiGUDFYnARkBLygcETH+/tuFqyVMr6SfapaNO5jWVjYv9rUYU4i5UzuoOz+eqFeMjBZMk41dszCJ//PVOvlyWNacfz8P3/18oGPdANJeDC7I4DRoFiPQ+iOinWnWAbni+thNvzRTpS9s1T/tQitT/66nep5WbElUi8ajVR/GcdOnJkx0+i7xwOQwJi5uyF484nr9b0hNeVp1ujjsBe5lzGwoIh1YWz0FJHkOU/UWvyLP/HGx9yZ91Jv289VFlk8nbxQ5R8MluKCB1D3ttr+5N8yDx+kcU0Fp93KO1oiswbcLR5z7JG7nJK/dFmdh2A7+eE8jUY5+uSQgM12A4G8eBI73eO2ch/NWooGTOi+NuCEyamv2OwEuVJ3GDKPohNvQkQYW9SugisuEbm3oyDb18m4DtdS4bZ8X/R1HZJbtoMcV7uQrDKvFmQqJhKw/RbAoUSAGPGIDV9zrPF1lfMpt2Jj9KV4+JXb12RUz0qElJ8LkdEV7m1UtSnZEpx+SODvPaIBTf4=
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      on:
+        branch: master
+        tag: true
