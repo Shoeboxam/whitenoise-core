@@ -1,0 +1,27 @@
+platform:
+  - x64
+environment:
+  global:
+    TWINE_USERNAME: __token__
+
+matrix:
+  - PYTHON: "C:\\Python38"
+  - PYTHON: "C:\\Python38-x64"
+
+install: 
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
+  - choco install protoc
+  - choco install rust
+
+build: off
+
+after_test:
+  - cd bindings-python
+  - "build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
+  - ls dist
+
+artifacts:
+  # bdist_wheel puts your built wheel in the dist directory
+  - path: dist\*
+
+#on_success:
