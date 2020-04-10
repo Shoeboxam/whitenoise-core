@@ -37,7 +37,7 @@ fi
 export PATH="/opt/python/cp38-cp38/bin:$PATH"
 
 pip install -r requirements.txt
-python setup.py bdist_wheel -d /io/wheelhouse # ./ -w wheelhouse # bdist_wheel -d /wheelhouse
+python setup.py sdist bdist_wheel -d /io/wheelhouse # ./ -w wheelhouse # bdist_wheel -d /wheelhouse
 
 for whl in /io/wheelhouse/*.whl; do
 	auditwheel repair "$whl" --plat $PLAT -w /io/wheelhouse/
