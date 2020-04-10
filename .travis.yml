@@ -79,11 +79,11 @@ jobs:
   - name: Deploy manylinux2010_x86_64
     services:
     - docker
-        addons:
-    apt:
-      update: true
-      packages:
-      - python3-pip
+    addons:
+      apt:
+        update: true
+        packages:
+        - python3-pip
     env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
          PROTO_PLAT=linux-x86_64.zip
          PYTHON_PLAT=manylinux2010_x86_64
