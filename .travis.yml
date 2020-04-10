@@ -69,7 +69,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tags: true
+        
 
   # 64-bit
   - name: Deploy manylinux2010_x86_64
@@ -77,7 +77,7 @@ jobs:
     - docker
     env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
          PROTO_PLAT=linux-x86_64.zip
-         PYTHON_PLAT=manylinux1_x86_64
+         PYTHON_PLAT=2010_x86_64
     install:
     - docker pull $DOCKER_IMAGE
     - chmod +x travis/manylinux-build-wheels.sh
@@ -90,7 +90,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tags: true
+        
 
   # RISC
   - name: Deploy manylinux2014_aarch64
@@ -113,7 +113,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tags: true
+        
 
 
   - name: Deploy osx
@@ -131,7 +131,7 @@ jobs:
       script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: master
-        tags: true
+        
 
   # - name: Deploy windows
   #   language: rust
@@ -153,4 +153,4 @@ jobs:
   #     script: pip3 install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
   #     on:
   #       branch: master
-  #       tags: true
+  #       
