@@ -55,6 +55,11 @@ jobs:
   - name: Deploy manylinux2010_i686
     services:
     - docker
+    addons:
+      apt:
+        update: true
+        packages:
+        - python3-pip
     env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_i686
          PROTO_PLAT=linux-x86_32.zip
          PYTHON_PLAT=manylinux2010_i686
@@ -75,6 +80,11 @@ jobs:
   - name: Deploy manylinux2010_x86_64
     services:
     - docker
+        addons:
+    apt:
+      update: true
+      packages:
+      - python3-pip
     env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
          PROTO_PLAT=linux-x86_64.zip
          PYTHON_PLAT=manylinux2010_x86_64
@@ -124,11 +134,11 @@ jobs:
     rust: stable  
     script:
     - cd bindings-python
-    - python3 setup.py bdist_wheel
+    - python3 setup.py bdist_wheel - /wheelhouse
     deploy:
       skip_cleanup: true
       provider: script
-      script: python3 -m pip install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+      script: python3 -m pip install twine && python3 -m twine upload --verbose --skip-existing /wheelhouse/*
       on:
         branch: develop
         
