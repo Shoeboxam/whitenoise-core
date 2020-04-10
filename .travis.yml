@@ -72,9 +72,9 @@ jobs:
       skip_cleanup: true
       provider: script
       script: 
-      - python3 -m pip install --upgrade pip
-      - python3 -m pip install twine
-      - python3 -m twine upload --verbose --skip-existing wheelhouse/*
+        python3 -m pip install --upgrade pip && 
+        python3 -m pip install twine && 
+        python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: develop
         
@@ -100,9 +100,7 @@ jobs:
       skip_cleanup: true
       provider: script
       script: 
-        python3 -m pip install --upgrade pip && 
-        python3 -m pip install twine && 
-        python3 -m twine upload --verbose --skip-existing wheelhouse/*
+        python3 -m pip install --upgrade pip && python3 -m pip install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: develop
         
@@ -137,16 +135,19 @@ jobs:
     osx_image: xcode11 # python3.7 comes installed with xcode11 image
     language: rust
     rust: stable  
+    install:
+    - python3 -m pip install delocate
     script:
     - cd bindings-python
     - python3 setup.py bdist_wheel -d /wheelhouse
+    - for whl in /wheelhouse/*.whl; do
+        delocate-wheel -v whl
+      done
     deploy:
       skip_cleanup: true
       provider: script
       script: 
-        python3 -m pip install --upgrade pip && 
-        python3 -m pip install twine && 
-        python3 -m twine upload --verbose --skip-existing wheelhouse/*
+        python3 -m pip install --upgrade pip && python3 -m pip install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
       on:
         branch: develop
         

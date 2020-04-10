@@ -48,16 +48,6 @@ def build_python(spec):
     )
 
 setup(
-    name='whitenoise',
-    version='0.1.0',
-    packages=['whitenoise'],
-    zip_safe=False,  # unzip the package when installing
-    setup_requires=['milksnake'],  # temporarily download these packages when setting up
-    install_requires=[  # install these packages to the environment when setting up
-        'protobuf',
-        'numpy',
-        'milksnake'
-    ],
     package_dir={"whitenoise": "whitenoise"},
     package_data={"whitenoise": ["variant_message_map.json"]},
     milksnake_tasks=[
