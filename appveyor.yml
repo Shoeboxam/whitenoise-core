@@ -11,6 +11,7 @@ install:
   - choco install protoc
   - choco install mingw
   - choco install rust
+  - choco install openssl
   - refreshenv
   - set PATH=%PYTHON%;%PATH%
   - "python.exe -m pip install wheel"
