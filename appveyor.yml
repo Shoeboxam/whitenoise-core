@@ -11,8 +11,8 @@ install:
   - choco install protoc
   - choco install mingw
   - choco install rust
-  - setx PATH=%PYTHON%;%PATH%
   - refreshenv
+  - set PATH=%PYTHON%;%PATH%
   - "python.exe -m pip install wheel"
 
 build_script: 
