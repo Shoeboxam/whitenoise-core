@@ -137,7 +137,7 @@ jobs:
     - python3 -m pip install delocate
     script:
     - cd bindings-python
-    - python3 setup.py bdist_wheel -d /wheelhouse
+    - python3 setup.py sdist bdist_wheel -d /wheelhouse
     - for whl in /wheelhouse/*.whl; do
         delocate-wheel -v whl
       done

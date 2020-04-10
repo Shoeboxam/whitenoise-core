@@ -3,19 +3,19 @@ platform:
 environment:
   global:
     TWINE_USERNAME: __token__
-
-matrix:
-  - PYTHON: "C:\\Python38"
-  - PYTHON: "C:\\Python38-x64"
+  matrix:
+    - PYTHON: "C:\\Python38"
+    - PYTHON: "C:\\Python38-x64"
 
 install: 
-  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
+  - set PATH=%PATH%;%PYTHON%
+  - "python.exe -m pip install --upgrade pip"
   - choco install protoc
   - choco install rust
 
 build_script: 
   - cd bindings-python
-  - "%PYTHON%\\python.exe setup.py bdist_wheel"
+  - "python.exe setup.py bdist_wheel"
   - ls dist
 
 artifacts:
