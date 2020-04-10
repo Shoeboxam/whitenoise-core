@@ -8,7 +8,7 @@ environment:
     - PYTHON: "C:\\Python38-x64"
 
 install: 
-  - set PATH=%PATH%;%PYTHON%
+  - set PATH=%PYTHON%;%PATH%
   - "python.exe -m pip install --upgrade pip"
   - choco install protoc
   - choco install rust
