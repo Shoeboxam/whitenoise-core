@@ -5,17 +5,18 @@ environment:
     TWINE_USERNAME: __token__
   matrix:
     - PYTHON: "C:\\Python38"
-    - PYTHON: "C:\\Python38-x64"
+    # - PYTHON: "C:\\Python38-x64"
 
 install: 
   - set PATH=%PYTHON%;%PATH%
   - "python.exe -m pip install wheel"
   - choco install protoc
+  - choco install mingw
   - choco install rust
 
 build_script: 
   - cd bindings-python
-  - "python.exe setup.py bdist_wheel"
+  - "python.exe setup.py sdist bdist_wheel"
   - ls dist
 
 artifacts:
