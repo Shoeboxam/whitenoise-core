@@ -75,7 +75,6 @@ jobs:
       on:
         branch: develop
         
-
   # 64-bit
   - name: Deploy manylinux2010_x86_64
     services:
