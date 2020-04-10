@@ -13,11 +13,9 @@ install:
   - choco install protoc
   - choco install rust
 
-build: off
-
-after_test:
+build_script: 
   - cd bindings-python
-  - "build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
+  - "%PYTHON%\\python.exe setup.py bdist_wheel"
   - ls dist
 
 artifacts:
