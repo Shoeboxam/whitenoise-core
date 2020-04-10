@@ -13,6 +13,7 @@ install:
   - choco install protoc
   - choco install mingw
   - choco install rust
+  - refreshenv
 
 build_script: 
   - cd bindings-python
