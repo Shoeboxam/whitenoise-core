@@ -8,7 +8,8 @@ environment:
     # - PYTHON: "C:\\Python38-x64"
 
 install: 
-  - c:\\tools\vcpkg\vcpkg.exe install openssl zlib:x86-windows
+  - dir C:\
+  - C:\\tools\\vcpkg\\vcpkg.exe install openssl zlib:x86-windows
   - choco install protoc
   - choco install mingw
   - choco install rust
