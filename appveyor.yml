@@ -8,13 +8,14 @@ environment:
     # - PYTHON: "C:\\Python38-x64"
 
 install: 
-  - dir C:\
-  - C:\\tools\\vcpkg\\vcpkg.exe install openssl zlib:x86-windows
+  - dir C:\OpenSSL-v111-Win32\bin
+  - dir C:\OpenSSL-v111-Win32\
   - choco install protoc
   - choco install mingw
   - choco install rust
   - refreshenv
   - set PATH=%PYTHON%;%PATH%
+  - OPENSSL_DIR=C:\OpenSSL-v111-Win32\bin
   - "python.exe -m pip install wheel"
 
 build_script: 
