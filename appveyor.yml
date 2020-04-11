@@ -15,7 +15,7 @@ install:
   - choco install rust
   - refreshenv
   - set PATH=%PYTHON%;%PATH%
-  - OPENSSL_DIR=C:\OpenSSL-v111-Win32\bin
+  - OPENSSL_DIR=C:\OpenSSL-v111-Win32
   - "python.exe -m pip install wheel"
 
 build_script: 
