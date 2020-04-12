@@ -18,7 +18,7 @@ if release:
 def build_native(spec):
     build_validator = spec.add_external_build(
         cmd=rust_build_cmd,
-        path='../validator-rust'
+        path=os.path.join('..', 'validator-rust')
     )
 
     spec.add_cffi_module(
@@ -30,7 +30,7 @@ def build_native(spec):
 
     build_runtime = spec.add_external_build(
         cmd=rust_build_cmd,
-        path='../runtime-rust'
+        path=os.path.join('..', 'runtime-rust')
     )
 
     spec.add_cffi_module(

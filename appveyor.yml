@@ -42,6 +42,4 @@ build_script:
 
 artifacts:
   # bdist_wheel puts your built wheel in the dist directory
-  - path: dist\*
-
-#on_success:
+  - path: bindings-python\dist\*
