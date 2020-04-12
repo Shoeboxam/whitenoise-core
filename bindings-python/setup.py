@@ -12,7 +12,7 @@ rust_build_path = 'target/' + ('release' if release else 'debug')
 rust_build_cmd = 'cargo build'
 
 if release:
-    rust_build_cmd.append('--release')
+    rust_build_cmd += ' --release'
 
 bash_build_cmd = ['bash', '-c', rust_build_cmd]
 
