@@ -9,7 +9,7 @@ os.environ['RUSTFLAGS'] = ""
 release = os.environ.get("WHITENOISE_RELEASE") == "True"
 
 rust_build_path = 'target/' + ('release' if release else 'debug')
-rust_build_cmd = ['cargo', 'build']
+rust_build_cmd = ['bash', '-c', 'cargo', 'build']
 
 if release:
     rust_build_cmd.append('--release')
@@ -43,7 +43,7 @@ def build_native(spec):
 
 def build_python(spec):
     spec.add_external_build(
-        cmd=['python3', 'code_generation.py'],
+        cmd=['bash', '-c', 'python3', 'code_generation.py'],
         path="."
     )
 

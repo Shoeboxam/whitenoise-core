@@ -7,16 +7,34 @@ environment:
     - PYTHON: "C:\\Python38"
     # - PYTHON: "C:\\Python38-x64"
 
+  matrix:
+    - compiler: msys2
+      ARCH: x64
+      MSYS2_ARCH: x86_64
+      MSYS2_DIR: msys64
+      MSYSTEM: MINGW64
+    - compiler: msys2
+      ARCH: x86
+      MSYS2_ARCH: i686
+      MSYS2_DIR: msys64
+      MSYSTEM: MINGW32
+    # - compiler: cygwin
+
 install: 
-  - dir C:\OpenSSL-v111-Win32\bin
-  - dir C:\OpenSSL-v111-Win32\
   - choco install protoc
-  - choco install mingw
   - choco install rust
   - refreshenv
-  - set PATH=%PYTHON%;%PATH%
-  - set OPENSSL_DIR=C:\OpenSSL-v111-Win32
+  - set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PYTHON%;%PATH%
+  - set OPENSSL_DIR=C:\\OpenSSL-v111-Win64
   - "python.exe -m pip install wheel"
+
+  - bash -lc "pacman --noconfirm --sync --refresh pacman"
+  - bash -lc "pacman --noconfirm --sync --refresh --sysupgrade"
+
+# rem bash -xlc "pacman --noconfirm -S --needed base-devel"
+
+  - bash -xlc "pacman --noconfirm -S --needed pacman-mirrors"
+  - bash -xlc "pacman --noconfirm -S --needed diffutils make mingw-w64-%MSYS2_ARCH%-gcc"
 
 build_script: 
   - cd bindings-python

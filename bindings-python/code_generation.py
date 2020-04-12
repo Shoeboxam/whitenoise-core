@@ -1,7 +1,7 @@
 import json
 import os
+import re
 
-if os.name != 'nt':
 # auto-update the protos
 import subprocess
 
@@ -9,10 +9,16 @@ import subprocess
 package_dir = os.path.join(os.getcwd(), 'whitenoise')
 subprocess.call(f"protoc --python_out={package_dir} *.proto", shell=True, cwd=os.path.abspath('../prototypes/'))
 
-if os.name != 'nt':
-    subprocess.call(f"sed -i -E 's/^import.*_pb2/from . &/' *.py", shell=True, cwd=package_dir)
+for proto_name in os.listdir(package_dir):
+    if not proto_name.endswith("_pb2.py"):
+        continue
 
-
+    proto_path = os.path.join(package_dir, proto_name)
+    with open(proto_path, 'r') as proto_file:
+        proto_text = "".join(["from . " + line if re.match("^import.*_pb2.*", line) else line for line in proto_file.readlines()])
+        
+    with open(proto_path, 'w') as proto_file:
+        proto_file.write(proto_text)
 components_dir = os.path.abspath("../prototypes/components")
 
 generated_code = """
