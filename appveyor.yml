@@ -3,6 +3,7 @@ platform:
 environment:
   global:
     TWINE_USERNAME: __token__
+    WHITENOISE_RELEASE: "True"
 
   matrix:
     - compiler: msys2

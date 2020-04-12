@@ -9,15 +9,17 @@ os.environ['RUSTFLAGS'] = ""
 release = os.environ.get("WHITENOISE_RELEASE") == "True"
 
 rust_build_path = 'target/' + ('release' if release else 'debug')
-rust_build_cmd = ['bash', '-c', 'cargo', 'build']
+rust_build_cmd = 'cargo build'
 
 if release:
     rust_build_cmd.append('--release')
 
+bash_build_cmd = ['bash', '-c', rust_build_cmd]
+
 
 def build_native(spec):
     build_validator = spec.add_external_build(
-        cmd=rust_build_cmd,
+        cmd=bash_build_cmd,
         path=os.path.join('..', 'validator-rust')
     )
 
@@ -29,7 +31,7 @@ def build_native(spec):
     )
 
     build_runtime = spec.add_external_build(
-        cmd=rust_build_cmd,
+        cmd=bash_build_cmd,
         path=os.path.join('..', 'runtime-rust')
     )
 
@@ -43,7 +45,7 @@ def build_native(spec):
 
 def build_python(spec):
     spec.add_external_build(
-        cmd=['bash', '-c', 'python3', 'code_generation.py'],
+        cmd=['bash', '-c', 'python3 code_generation.py'],
         path="."
     )
 
