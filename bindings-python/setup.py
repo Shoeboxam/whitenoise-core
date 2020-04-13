@@ -12,7 +12,7 @@ rust_build_path = ['target']
 if os.name == "nt":
     rust_build_path.append("x86_64-pc-windows-gnu")
 rust_build_path.append('release' if release else 'debug')
-rust_build_path = os.path.join(rust_build_path)
+rust_build_path = os.path.join(*rust_build_path)
 
 rust_build_cmd = 'cargo build'
 
