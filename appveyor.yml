@@ -38,7 +38,7 @@ install:
 
 build_script: 
   - cd bindings-python
-  - bash -c python.exe setup.py sdist bdist_wheel
+  - python.exe setup.py sdist bdist_wheel
   - ls dist
   - ls ../validator-rust/target/release
 
