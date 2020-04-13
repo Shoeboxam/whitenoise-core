@@ -1,3 +1,7 @@
+branches:
+  only:
+    - master
+
 platform:
   - x64
 environment:
@@ -38,10 +42,15 @@ install:
 
 build_script: 
   - cd bindings-python
-  - python.exe setup.py sdist bdist_wheel
+  - bash -lc "python.exe setup.py sdist bdist_wheel"
   - ls dist
   - ls ../validator-rust/target/release
 
 artifacts:
   # bdist_wheel puts your built wheel in the dist directory
   - path: bindings-python\dist\*
+
+deploy_script:
+  - if($env:appveyor_repo_tag -eq 'True') {
+      python3.exe -m pip install --upgrade pip && python3 -m pip install twine && python3 -m twine upload --verbose --skip-existing wheelhouse/*
+    }
