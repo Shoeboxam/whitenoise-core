@@ -26,7 +26,7 @@ install:
   - refreshenv
   - set PATH=%PYTHON%;C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%
   - set OPENSSL_DIR=C:\\OpenSSL-v111-Win64
-  - python.exe -m pip install wheel
+  - bash -c python.exe -m pip install wheel
 
   - bash -lc "pacman --noconfirm --sync --refresh pacman"
   - bash -lc "pacman --noconfirm --sync --refresh --sysupgrade"
@@ -38,8 +38,9 @@ install:
 
 build_script: 
   - cd bindings-python
-  - "python.exe setup.py sdist bdist_wheel"
+  - bash -c python.exe setup.py sdist bdist_wheel
   - ls dist
+  - ls ../validator-rust/target/release
 
 artifacts:
   # bdist_wheel puts your built wheel in the dist directory
