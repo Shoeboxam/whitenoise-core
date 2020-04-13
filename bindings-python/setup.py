@@ -8,7 +8,7 @@ os.environ['RUSTFLAGS'] = ""
 # set the environment variable to increase compiler optimization
 release = os.environ.get("WHITENOISE_RELEASE") == "True"
 
-rust_build_path = 'target/' + ('release' if release else 'debug')
+rust_build_path = os.path.join('target', ('release' if release else 'debug'))
 rust_build_cmd = 'cargo build'
 
 if release:

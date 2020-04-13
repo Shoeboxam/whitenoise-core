@@ -26,7 +26,7 @@ install:
   - refreshenv
   - set PATH=%PYTHON%;C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%
   - set OPENSSL_DIR=C:\\OpenSSL-v111-Win64
-  - bash -c python.exe -m pip install wheel
+  - python.exe -m pip install wheel
 
   - bash -lc "pacman --noconfirm --sync --refresh pacman"
   - bash -lc "pacman --noconfirm --sync --refresh --sysupgrade"
